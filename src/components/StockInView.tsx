@@ -39,6 +39,7 @@ export const StockInView: React.FC<StockInViewProps> = ({
   );
   const [receivedBy, setReceivedBy] = useState<string>('Office Inventory Clerk');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const initialProd = initialProductId
     ? products.find(p => p.id === initialProductId)
@@ -101,9 +102,10 @@ export const StockInView: React.FC<StockInViewProps> = ({
     e.preventDefault();
 
     if (items.length === 0 || totalUnits <= 0) {
-      alert('Please include at least one valid product line with quantity > 0');
+      setErrorMessage('Please include at least one valid product line with quantity > 0');
       return;
     }
+    setErrorMessage(null);
 
     recordStockIn({
       batchNumber,
@@ -173,6 +175,21 @@ export const StockInView: React.FC<StockInViewProps> = ({
           <button
             onClick={() => setSuccessMessage(null)}
             className="text-emerald-700 hover:text-emerald-900 font-semibold"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between text-xs text-rose-900">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <span className="font-medium">{errorMessage}</span>
+          </div>
+          <button
+            onClick={() => setErrorMessage(null)}
+            className="text-rose-700 hover:text-rose-900 font-semibold"
           >
             Dismiss
           </button>

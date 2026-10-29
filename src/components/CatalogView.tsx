@@ -33,6 +33,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   const [selectedStockFilter, setSelectedStockFilter] = useState<string>('All');
   const [barcodeInput, setBarcodeInput] = useState('');
   const [barcodeFound, setBarcodeFound] = useState<string | null>(null);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   const categories: (ProductCategory | 'All')[] = [
     'All',
@@ -378,11 +379,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
-                            onClick={() => {
-                              if (confirm(`Are you sure you want to delete ${product.name}?`)) {
-                                deleteProduct(product.id);
-                              }
-                            }}
+                            onClick={() => setProductToDelete(product)}
                             title="Delete product"
                             className="p-1.5 text-neutral-400 hover:text-rose-700 hover:bg-rose-50 rounded transition-colors"
                           >
@@ -398,6 +395,43 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {productToDelete && (
+        <div className="fixed inset-0 z-50 bg-neutral-950/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl border border-neutral-200 max-w-sm w-full p-5 shadow-2xl space-y-4 text-xs">
+            <div className="flex items-center justify-between pb-2 border-b border-neutral-100">
+              <h3 className="font-bold text-neutral-900 text-sm">Delete Avon Product</h3>
+              <button
+                onClick={() => setProductToDelete(null)}
+                className="text-neutral-400 hover:text-neutral-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-neutral-600">
+              Are you sure you want to remove <strong className="text-neutral-900">{productToDelete.name}</strong> ({productToDelete.sku}) from the master database?
+            </p>
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-100">
+              <button
+                onClick={() => setProductToDelete(null)}
+                className="px-3 py-1.5 font-medium text-neutral-600 hover:text-neutral-900"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  deleteProduct(productToDelete.id);
+                  setProductToDelete(null);
+                }}
+                className="px-3.5 py-1.5 font-semibold text-white bg-rose-900 hover:bg-rose-800 rounded-lg transition-colors"
+              >
+                Delete Product
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

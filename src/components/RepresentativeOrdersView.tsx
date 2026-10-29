@@ -97,12 +97,11 @@ export const RepresentativeOrdersView: React.FC<{
   const handleCreateOrderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (hasStockError) {
-      alert(stockErrorMessage);
       return;
     }
 
     try {
-      const newOrderId = createRepresentativeOrder({
+      const createdOrder = createRepresentativeOrder({
         representativeId: selectedRepId,
         items: orderLines.map(l => ({
           productId: l.productId,
@@ -123,13 +122,12 @@ export const RepresentativeOrdersView: React.FC<{
       ]);
       setOrderNotes('');
 
-      // Auto-open dispatch slip
-      const created = orders.find(o => o.id === newOrderId);
-      if (created) {
-        setViewingSlipOrder(created);
+      // Auto-open dispatch slip directly with the created order
+      if (createdOrder) {
+        setViewingSlipOrder(createdOrder);
       }
     } catch (err: any) {
-      alert(err.message || 'Error creating order');
+      console.error('Error creating order', err);
     }
   };
 

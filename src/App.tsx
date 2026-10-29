@@ -24,6 +24,7 @@ const MainAppContent: React.FC = () => {
   const [isAdjustModalOpen, setIsAdjustModalOpen] = useState(false);
   const [adjustingProduct, setAdjustingProduct] = useState<Product | null>(null);
   const [stockInInitialProductId, setStockInInitialProductId] = useState<string | null>(null);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   // Quick Restock from Dashboard
   const handleQuickRestock = (productId: string) => {
@@ -145,11 +146,7 @@ const MainAppContent: React.FC = () => {
             </button>
             <span aria-hidden="true" className="text-neutral-300">·</span>
             <button
-              onClick={() => {
-                if (confirm('Reset inventory database to initial demo dataset?')) {
-                  resetToDemoData();
-                }
-              }}
+              onClick={() => setIsResetModalOpen(true)}
               className="text-neutral-600 hover:text-neutral-900 flex items-center gap-1 transition-colors"
             >
               <RotateCcw className="w-3 h-3" />
@@ -158,6 +155,35 @@ const MainAppContent: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Reset Confirmation Modal */}
+      {isResetModalOpen && (
+        <div className="fixed inset-0 z-50 bg-neutral-950/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl border border-neutral-200 max-w-sm w-full p-5 shadow-2xl space-y-4 text-xs">
+            <h3 className="font-bold text-neutral-900 text-sm">Reset Inventory Database</h3>
+            <p className="text-neutral-600">
+              Restore default Avon product catalog, initial stock levels, and representative order movements?
+            </p>
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-100">
+              <button
+                onClick={() => setIsResetModalOpen(false)}
+                className="px-3 py-1.5 font-medium text-neutral-600 hover:text-neutral-900"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  resetToDemoData();
+                  setIsResetModalOpen(false);
+                }}
+                className="px-3.5 py-1.5 font-semibold text-white bg-rose-900 hover:bg-rose-800 rounded-lg transition-colors"
+              >
+                Reset Data
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

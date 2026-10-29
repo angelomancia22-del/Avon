@@ -43,7 +43,7 @@ interface InventoryContextType {
     paymentStatus: 'Paid' | 'Credit' | 'Partial';
     notes?: string;
     autoDispatch?: boolean;
-  }) => string;
+  }) => RepresentativeOrder;
   dispatchOrder: (orderId: string) => void;
   adjustStockDirect: (productId: string, newStock: number, reason: string, clerk: string) => void;
   resetToDemoData: () => void;
@@ -311,7 +311,7 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     paymentStatus: 'Paid' | 'Credit' | 'Partial';
     notes?: string;
     autoDispatch?: boolean;
-  }): string => {
+  }): RepresentativeOrder => {
     const rep = representatives.find(r => r.id === orderData.representativeId);
     if (!rep) throw new Error('Representative not found');
 
@@ -411,7 +411,7 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setMovements(prev => [...newMovements, ...prev]);
     }
 
-    return newOrder.id;
+    return newOrder;
   };
 
   const dispatchOrder = (orderId: string) => {
